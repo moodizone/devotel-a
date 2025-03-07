@@ -12,6 +12,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { ModeToggle } from "./toggle";
 
 // This is sample data.
 const data = {
@@ -52,7 +53,9 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
-      <SidebarHeader>header goes here</SidebarHeader>
+      <SidebarHeader>
+        <ModeToggle />
+      </SidebarHeader>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}
         {data.navMain.map((item) => (
