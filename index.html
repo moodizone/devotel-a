@@ -1,13 +1,60 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>Smart Insurance Application</title>
+    <style>
+      #loading-page {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #loading-page.hide {
+        display: none;
+      }
+
+      #loading-page svg {
+        width: 60px;
+        height: 60px;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <div id="loading-page">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <style>
+          .spinner {
+            animation: spinner_MGfb 0.8s linear infinite;
+            animation-delay: -0.8s;
+            fill: #a1a1aa;
+          }
+          .spinner_Km9P {
+            animation-delay: -0.65s;
+          }
+          .spinner_JApP {
+            animation-delay: -0.5s;
+          }
+          @keyframes spinner_MGfb {
+            93.75%,
+            100% {
+              opacity: 0.2;
+            }
+          }
+        </style>
+        <circle class="spinner" cx="4" cy="12" r="3" />
+        <circle class="spinner spinner_Km9P" cx="12" cy="12" r="3" />
+        <circle class="spinner spinner_JApP" cx="20" cy="12" r="3" />
+      </svg>
+    </div>
   </body>
 </html>
