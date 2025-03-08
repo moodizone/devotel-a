@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "react-router";
 
 import {
   Sidebar,
@@ -14,6 +15,7 @@ import { ModeToggle } from "@/layout/sidebar/toggle";
 import Fallback from "@/layout/sidebar/fallback";
 import Forms from "@/layout/sidebar/forms";
 import Submissions from "@/layout/sidebar/submissions";
+import { ROUTES } from "@/router/routes";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -23,7 +25,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>{"Forms"}</SidebarGroupLabel>
+          <SidebarGroupLabel>
+            <Link to={ROUTES.forms.root}>{"Forms"}</Link>
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <React.Suspense fallback={<Fallback />}>
@@ -33,7 +37,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>{"Submissions"}</SidebarGroupLabel>
+          <SidebarGroupLabel>
+            <Link to={ROUTES.submissions.root}>{"Submissions"}</Link>
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <React.Suspense fallback={<Fallback />}>

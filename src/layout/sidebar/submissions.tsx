@@ -15,7 +15,7 @@ function Submissions() {
   return data?.data?.map(({ id: si }) => {
     const url = ROUTES.submissions.details.replace(":id", si);
     const isActive =
-      id && pathname === ROUTES.submissions.details.replace(id, si);
+      id && pathname === ROUTES.submissions.details.replace(":id", si);
     return (
       <SidebarMenuItem key={si}>
         <SidebarMenuButton asChild isActive={Boolean(isActive)}>

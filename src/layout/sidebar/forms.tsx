@@ -15,7 +15,7 @@ function Forms() {
   return data?.map(({ formId, title }) => {
     const url = ROUTES.forms.details.replace(":id", formId);
     const isActive =
-      id && pathname === ROUTES.forms.details.replace(id, formId);
+      id && pathname === ROUTES.forms.details.replace(":id", formId);
 
     return (
       <SidebarMenuItem key={formId}>
