@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Outlet, useLocation } from "react-router";
+import { Link, Outlet, useLocation } from "react-router";
 
 import {
   Breadcrumb,
@@ -15,9 +15,9 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@radix-ui/react-separator";
-import { AppSidebar } from "@/layout/sidebar";
+import { AppSidebar } from "@/layout/sidebar/sidebar";
 import { endLoadingState } from "@/utils/spinner";
-import Fallback from "./fallback";
+import Fallback from "@/layout/sidebar/fallback";
 
 function AppLayout() {
   //================================
@@ -36,7 +36,7 @@ function AppLayout() {
     // last segment (non-clickable)
     if (i === segments.length - 1) {
       return (
-        <BreadcrumbItem key={i}>
+        <BreadcrumbItem className="capitalize" key={i}>
           <BreadcrumbPage>{b}</BreadcrumbPage>
         </BreadcrumbItem>
       );
@@ -45,8 +45,10 @@ function AppLayout() {
     // other segments with an extra separator
     return (
       <React.Fragment key={i}>
-        <BreadcrumbItem className="hidden md:block">
-          <BreadcrumbLink href={link}>{b}</BreadcrumbLink>
+        <BreadcrumbItem className="hidden md:block capitalize">
+          <BreadcrumbLink asChild>
+            <Link to={link}>{b}</Link>
+          </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator className="hidden md:block" />
       </React.Fragment>
