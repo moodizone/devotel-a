@@ -1,7 +1,7 @@
 export const ROUTES = {
-  home: {
-    root: "/",
-    appDetails: "/:id",
+  submissions: {
+    root: "/submissions",
+    details: "/submissions/:id",
   },
   forms: {
     root: "/forms",

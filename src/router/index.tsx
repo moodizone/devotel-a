@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router";
 
 import AppLayout from "@/layout";
 import NotFound from "@/pages/not-found";
@@ -13,9 +13,10 @@ function Router() {
     <BrowserRouter>
       <Routes>
         <Route element={<AppLayout />}>
-          <Route path={ROUTES.home.root} element={<SubmissionsList />} />
+          <Route path="/" element={<Navigate to={ROUTES.submissions.root} />} />
+          <Route path={ROUTES.submissions.root} element={<SubmissionsList />} />
           <Route
-            path={ROUTES.home.appDetails}
+            path={ROUTES.submissions.details}
             element={<SubmissionDetails />}
           />
           <Route path={ROUTES.forms.root} element={<FormsList />} />
