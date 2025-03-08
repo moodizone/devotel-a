@@ -84,6 +84,7 @@ export interface Submission {
   Gender: Gender;
   "Insurance Type": string;
   City: string;
+  Status?: string;
 }
 export interface Submissions {
   columns: Array<keyof Omit<Submission, "id">>;

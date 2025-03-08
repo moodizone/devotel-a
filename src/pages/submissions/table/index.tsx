@@ -46,13 +46,18 @@ export function DataTable({ columns, data, onRowClick }: DataTableProps) {
       columnVisibility,
       columnFilters,
     },
-    enableRowSelection: true,
+
+    // display
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
+
+    // filter
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+
+    // sort
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
   });
@@ -89,6 +94,7 @@ export function DataTable({ columns, data, onRowClick }: DataTableProps) {
                   onClick={() => {
                     const originalId = row.original?.id;
 
+                    // use submission id for navigating
                     if (originalId) {
                       onRowClick(originalId);
                     }

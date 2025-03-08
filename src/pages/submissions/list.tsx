@@ -19,6 +19,8 @@ function SubmissionsList() {
           <DataTableColumnHeader column={column} title={key} />
         ),
         cell: ({ row }) => <div className="w-[80px]">{row.getValue(key)}</div>,
+
+        // since `male` phrase is subset of female, it makes gender filter useless
         filterFn: "arrIncludes",
       }));
     }
