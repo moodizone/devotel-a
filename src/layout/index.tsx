@@ -17,7 +17,7 @@ import {
 import { Separator } from "@radix-ui/react-separator";
 import { AppSidebar } from "@/layout/sidebar/sidebar";
 import { endLoadingState } from "@/utils/spinner";
-import Fallback from "@/layout/sidebar/fallback";
+import Fallback from "@/layout/fallback";
 
 function AppLayout() {
   //================================
