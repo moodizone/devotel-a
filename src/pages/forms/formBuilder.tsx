@@ -43,6 +43,14 @@ interface DynamicFormProps {
   formSchema: FormType;
 }
 
+interface DynamicFieldProps {
+  field: FormFieldType;
+  control: Control;
+  watch: UseFormWatch<FieldValues>;
+  setValue: UseFormSetValue<FieldValues>;
+  parentPath: string[];
+}
+
 function DynamicForm({ formSchema }: DynamicFormProps) {
   const validationSchema = React.useMemo(
     () => generateYupSchema(formSchema.fields),
@@ -70,6 +78,7 @@ function DynamicForm({ formSchema }: DynamicFormProps) {
             control={form.control}
             watch={form.watch}
             setValue={form.setValue}
+            parentPath={[]}
           />
         ))}
         <Button className="w-full my-4" type="submit">
@@ -85,14 +94,12 @@ function DynamicField({
   control,
   watch,
   setValue,
-}: {
-  field: FormFieldType;
-  control: Control;
-  watch: UseFormWatch<FieldValues>;
-  setValue: UseFormSetValue<FieldValues>;
-}) {
+  parentPath,
+}: DynamicFieldProps) {
+  const id = [...parentPath, field.id].join(".");
   const shouldDisplay = field.visibility
-    ? watch(field.visibility.dependsOn) === field.visibility.value
+    ? watch([...parentPath, field.visibility.dependsOn].join(".")) ===
+      field.visibility.value
     : true;
 
   if (!shouldDisplay) return null;
@@ -102,7 +109,7 @@ function DynamicField({
       return (
         <FormField
           control={control}
-          name={field.id}
+          name={id}
           render={({ field: f }) => (
             <FormItem className="mb-4">
               <FormLabel>{field.label}</FormLabel>
@@ -126,7 +133,7 @@ function DynamicField({
       return (
         <FormField
           control={control}
-          name={field.id}
+          name={id}
           render={({ field: f }) => (
             <FormItem className="mb-4">
               <FormLabel>{field.label}</FormLabel>
@@ -151,7 +158,7 @@ function DynamicField({
       return (
         <FormField
           control={control}
-          name={field.id}
+          name={id}
           render={({ field: f }) => (
             <FormItem className="flex flex-col">
               <FormLabel>{field.label}</FormLabel>
@@ -194,7 +201,7 @@ function DynamicField({
       return (
         <FormField
           control={control}
-          name={field.id}
+          name={id}
           render={({ field: f }) => (
             <FormItem className="mb-4">
               <FormLabel>{field.label}</FormLabel>
@@ -223,7 +230,7 @@ function DynamicField({
       return (
         <FormField
           control={control}
-          name={field.id}
+          name={id}
           render={({ field: f }) => (
             <FormItem className="mb-4">
               <FormLabel>{field.label}</FormLabel>
@@ -252,21 +259,16 @@ function DynamicField({
             <CardTitle>{field.label}</CardTitle>
           </CardHeader>
           <CardContent>
-            {field.fields?.map((subField) => {
-              const newField = {
-                ...subField,
-                id: `${field.id}.${subField.id}`,
-              };
-              return (
-                <DynamicField
-                  key={subField.id}
-                  field={newField}
-                  control={control}
-                  watch={watch}
-                  setValue={setValue}
-                />
-              );
-            })}
+            {field.fields?.map((subField) => (
+              <DynamicField
+                parentPath={[...parentPath, id]}
+                key={subField.id}
+                field={subField}
+                control={control}
+                watch={watch}
+                setValue={setValue}
+              />
+            ))}
           </CardContent>
         </Card>
       );

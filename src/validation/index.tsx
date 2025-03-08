@@ -88,8 +88,12 @@ export function generateYupSchema(fields: FormFieldType[]) {
           }
           return false;
         },
-        then: (schema) => schema,
-        otherwise: (schema) => schema.strip(),
+        then: (schema) => {
+          return schema;
+        },
+        otherwise: (schema) => {
+          return schema.notRequired();
+        },
       });
     }
 
