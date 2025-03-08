@@ -68,7 +68,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                   </Badge>
                 ) : (
                   options
-                    .filter((option) => selectedValues === option.value)
+                    .filter((option) => selectedValues.has(option.value))
                     .map((option) => (
                       <Badge
                         variant="secondary"
@@ -102,6 +102,8 @@ export function DataTableFacetedFilter<TData, TValue>({
                         selectedValues.add(option.value);
                       }
                       const filterValues = Array.from(selectedValues);
+                      console.log(filterValues);
+
                       column?.setFilterValue(
                         filterValues.length ? filterValues : undefined
                       );

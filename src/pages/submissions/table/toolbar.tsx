@@ -3,8 +3,8 @@ import { Table } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DataTableViewOptions } from "./data-table-view-options";
-import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+import { DataTableViewOptions } from "@/pages/submissions/table/view-options";
+import { DataTableFacetedFilter } from "@/pages/submissions/table/faceted-filter";
 import { Gender } from "@/services/type";
 
 interface DataTableToolbarProps<TData> {
