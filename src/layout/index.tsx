@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Outlet, useLocation } from "react-router";
 
 import {
   Breadcrumb,
@@ -14,15 +15,55 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@radix-ui/react-separator";
-import { AppSidebar } from "./sidebar";
+import { AppSidebar } from "@/layout/sidebar";
 import { endLoadingState } from "@/utils/spinner";
-import { Outlet } from "react-router";
+import Fallback from "./fallback";
 
 function AppLayout() {
+  //================================
+  // Init
+  //================================
+  const { pathname } = useLocation();
+  // remove an extra ""
+  const segments = pathname.split("/").filter((segment) => segment !== "");
+
+  //================================
+  // Subcomponents
+  //================================
+  const breadcrumbs = segments.map((b, i) => {
+    const link = `/${segments.slice(0, i + 1).join("/")}`;
+
+    // last segment (non-clickable)
+    if (i === segments.length - 1) {
+      return (
+        <BreadcrumbItem key={i}>
+          <BreadcrumbPage>{b}</BreadcrumbPage>
+        </BreadcrumbItem>
+      );
+    }
+
+    // other segments with an extra separator
+    return (
+      <React.Fragment key={i}>
+        <BreadcrumbItem className="hidden md:block">
+          <BreadcrumbLink href={link}>{b}</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator className="hidden md:block" />
+      </React.Fragment>
+    );
+  });
+
+  //================================
+  // Handlers
+  //================================
+  // remove html spinner once react loaded
   React.useEffect(() => {
     endLoadingState();
   }, []);
 
+  //================================
+  // Render
+  //================================
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -31,21 +72,13 @@ function AppLayout() {
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">
-                  Building Your Application
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
+            <BreadcrumbList>{breadcrumbs}</BreadcrumbList>
           </Breadcrumb>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
-          <Outlet />
+          <React.Suspense fallback={<Fallback />}>
+            <Outlet />
+          </React.Suspense>
         </div>
       </SidebarInset>
     </SidebarProvider>
