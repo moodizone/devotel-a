@@ -1,7 +1,7 @@
 export interface FormType {
   formId: string;
   title: string;
-  fields: FormField[];
+  fields: FormFieldType[];
 }
 
 //================================
@@ -36,9 +36,12 @@ export interface NumberInput extends BaseFormField {
 }
 export interface RadioInput extends BaseFormField {
   type: "radio";
-  option: string[];
+  options: string[];
 }
-export type CheckboxInput = RadioInput;
+export interface CheckboxInput extends BaseFormField {
+  type: "checkbox";
+  options: string[];
+}
 export interface DateInput extends BaseFormField {
   type: "date";
 }
@@ -46,6 +49,7 @@ export interface DateInput extends BaseFormField {
   type: "date";
 }
 export interface SelectInput extends BaseFormField {
+  type: "select";
   options?: string[];
   dynamicOptions?: {
     dependsOn: BaseFormField["id"];
@@ -55,9 +59,9 @@ export interface SelectInput extends BaseFormField {
 }
 export interface GroupInput extends BaseFormField {
   type: "group";
-  fields: FormField[];
+  fields: FormFieldType[];
 }
-export type FormField =
+export type FormFieldType =
   | TextInput
   | NumberInput
   | RadioInput
