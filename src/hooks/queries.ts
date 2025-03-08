@@ -1,5 +1,5 @@
 import { getForms, getSubmissions } from "@/services";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 //================================
 // Keys
@@ -11,7 +11,7 @@ export const SUBMISSION_KEY = "SUBMISSION_KEY";
 // Queries
 //================================
 export function useGetForms() {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: [FORM_KEY],
     queryFn: getForms,
     gcTime: Infinity,
@@ -19,7 +19,7 @@ export function useGetForms() {
   });
 }
 export function useGerSubmissions() {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: [SUBMISSION_KEY],
     queryFn: getSubmissions,
     gcTime: Infinity,
