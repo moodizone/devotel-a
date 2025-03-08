@@ -20,22 +20,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DataTableToolbar } from "@/pages/submissions/table/toolbar";
+import { Submission } from "@/services/type";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableProps {
+  columns: ColumnDef<Submission>[];
+  data: Submission[];
+  onRowClick(id: Submission["id"]): void;
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+export function DataTable({ columns, data, onRowClick }: DataTableProps) {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  console.log(columnFilters);
 
   const table = useReactTable({
     data,
@@ -79,7 +77,17 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  className="cursor-pointer"
+                  onClick={() => {
+                    const originalId = row.original?.id;
+
+                    if (originalId) {
+                      onRowClick(originalId);
+                    }
+                  }}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
