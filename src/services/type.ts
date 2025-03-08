@@ -86,6 +86,6 @@ export interface Submission {
   City: string;
 }
 export interface Submissions {
-  columns: keyof Omit<Submission, "id">;
+  columns: Array<keyof Omit<Submission, "id">>;
   data: Submission[];
 }
