@@ -6,6 +6,7 @@ import { useGerSubmissions } from "@/hooks/queries";
 import { DataTable } from "@/pages/submissions/table";
 import { Submission } from "@/services/type";
 import { ROUTES } from "@/router/routes";
+import { DataTableColumnHeader } from "@/pages/submissions/table/sort";
 
 function SubmissionsList() {
   const navigate = useNavigate();
@@ -14,7 +15,9 @@ function SubmissionsList() {
     if (data.columns) {
       return data.columns.map((key) => ({
         accessorKey: key,
-        header: () => <span className="capitalize">{key}</span>,
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={key} />
+        ),
         cell: ({ row }) => <div className="w-[80px]">{row.getValue(key)}</div>,
         filterFn: "arrIncludes",
       }));
@@ -28,7 +31,13 @@ function SubmissionsList() {
   //================================
   // Render
   //================================
-  return <DataTable data={data.data ?? []} columns={columns} onRowClick={onRowClick}/>;
+  return (
+    <DataTable
+      data={data.data ?? []}
+      columns={columns}
+      onRowClick={onRowClick}
+    />
+  );
 }
 
 export default SubmissionsList;
