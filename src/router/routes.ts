@@ -7,4 +7,5 @@ export const ROUTES = {
     root: "/forms",
     details: "/forms/:id",
   },
+  _404: "/404",
 };

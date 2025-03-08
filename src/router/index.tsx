@@ -21,7 +21,8 @@ function Router() {
           />
           <Route path={ROUTES.forms.root} element={<FormsList />} />
           <Route path={ROUTES.forms.details} element={<FormDetails />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path={ROUTES._404} element={<NotFound />} />
+          <Route path="*" element={<Navigate to={ROUTES._404} />} />
         </Route>
       </Routes>
     </BrowserRouter>
