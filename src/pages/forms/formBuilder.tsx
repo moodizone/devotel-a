@@ -104,12 +104,52 @@ function DynamicField({
   setValue,
   parentPath,
 }: DynamicFieldProps) {
+  //================================
+  // Init
+  //================================
   const id = [...parentPath, field.id].join(".");
   const shouldDisplay = field.visibility
     ? watch([...parentPath, field.visibility.dependsOn].join(".")) ===
       field.visibility.value
     : true;
+  const [options, setOptions] = React.useState<string[]>([]);
+  const [disable, setDisable] = React.useState(false);
 
+  React.useEffect(() => {
+    if (field.type === "select") {
+      if (field.dynamicOptions) {
+        const { dependsOn, endpoint, method } = field.dynamicOptions;
+        const value = watch([...parentPath, dependsOn].join("."));
+
+        // Only fetch if the prerequisite value has changed and is not empty
+        if (value) {
+          setDisable(true);
+          appFetch<string[]>(`${endpoint}?${dependsOn}=${value}`, { method })
+            .then((data) => {
+              setOptions(data);
+            })
+            .catch(() => {
+              setOptions([]);
+            })
+            .finally(() => {
+              setDisable(false);
+            });
+        } else {
+          // Clear options if the prerequisite value is empty
+          setOptions([]);
+          setDisable(true);
+        }
+      } else {
+        setOptions(field.options ?? []);
+      }
+    }
+
+    // @ts-expect-error can not alias inside dep
+  }, [field.dynamicOptions, field.type, parentPath, field.options, watch]);
+
+  //================================
+  // Render
+  //================================
   if (!shouldDisplay) return null;
 
   switch (field.type) {
@@ -205,34 +245,6 @@ function DynamicField({
         />
       );
     case "select": {
-      let options: string[] = [];
-      let isDisable = false;
-
-      if (field.dynamicOptions) {
-        isDisable = true;
-        const { dependsOn, endpoint, method } = field.dynamicOptions;
-        const value = watch([...parentPath, dependsOn].join("."));
-
-        // send request only if prerequisite is met
-        if (value) {
-          appFetch<string[]>(`${endpoint}?${dependsOn}=${value}`, {
-            method,
-          })
-            .then((data) => {
-              options = data;
-            })
-            // ignore errors
-            .catch(() => {
-              options = [];
-            })
-            .finally(() => {
-              isDisable = false;
-            });
-        }
-      } else {
-        options = field.options ? [...field.options] : [];
-      }
-
       return (
         <FormField
           control={control}
@@ -242,7 +254,7 @@ function DynamicField({
               <FormLabel>{field.label}</FormLabel>
               <FormControl>
                 <Select
-                  disabled={isDisable}
+                  disabled={disable}
                   defaultValue={f.value}
                   onValueChange={f.onChange}
                 >
