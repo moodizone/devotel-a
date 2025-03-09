@@ -7,6 +7,7 @@ export async function appFetch<T>(
   const response = await fetch(BASE_URL + url, {
     ...options,
     headers: {
+      mode: "no-cors",
       "Content-Type": "application/json",
       ...options.headers,
     },
