@@ -16,6 +16,7 @@ export function useGetForms() {
     queryFn: getForms,
     gcTime: Infinity,
     staleTime: Infinity,
+    retry: 1,
   });
 }
 export function useGerSubmissions() {
@@ -24,5 +25,6 @@ export function useGerSubmissions() {
     queryFn: getSubmissions,
     gcTime: Infinity,
     staleTime: Infinity,
+    retry: 1,
   });
 }
