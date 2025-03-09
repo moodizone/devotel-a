@@ -1,54 +1,51 @@
-# React + TypeScript + Vite
+# Smart Insurance Application Portal 🏥🚗🏠
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## **Overview**
 
-Currently, two official plugins are available:
+This is a **React + TypeScript + Vite** project for a **Smart Insurance Application Portal**. The app dynamically renders insurance application forms based on API responses and allows users to view, filter, and manage their submitted applications.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🔗 **Live Demo:** [View Here](https://moodizone.github.io/devotel-a/)
 
-## Expanding the ESLint configuration
+## **Features**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+✅ **Dynamic Form Rendering** – Fetches form structure from an API (no hardcoded forms).  
+✅ **Conditional Fields** – Shows/hides fields based on user input.  
+✅ **Nested Fields** – Supports complex structures (e.g., address, vehicle details).  
+✅ **Validation** – Ensures user input is correct before submission.  
+✅ **Customizable List View** – Users can select, sort, and filter table columns.  
+✅ **API-Driven Data** – Fetches submitted applications dynamically.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## **Tech Stack**
+
+- **Frontend:** React 19, TypeScript, Vite
+- **State Management:** React Hook Form
+- **UI Components:** Radix UI, TailwindCSS
+- **Validation:** Yup
+- **Testing:** Jest, React Testing Library
+- **UI component:** Shadcn, Tanstack table, query
+
+## **Install Dependencies**
+
+Due to peer conflicts
+
+```
+npm install -f
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## **Start the Development Server**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```
+npm run dev
+```
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+## **Test**
+
+```
+npm test
+```
+
+## **Deployment**
+
+```
+npm run deploy
 ```
