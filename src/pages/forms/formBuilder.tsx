@@ -39,6 +39,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { generateYupSchema } from "@/validation";
 import { appFetch } from "@/utils/fetch";
+import Result from "@/pages/forms/result";
 
 interface DynamicFormProps {
   formSchema: FormType;
@@ -53,6 +54,8 @@ interface DynamicFieldProps {
 }
 
 function DynamicForm({ formSchema }: DynamicFormProps) {
+  const [open, setOpen] = React.useState(false);
+  const [values, setValues] = React.useState({});
   const validationSchema = React.useMemo(
     () => generateYupSchema(formSchema.fields),
     [formSchema]
@@ -61,32 +64,36 @@ function DynamicForm({ formSchema }: DynamicFormProps) {
     resolver: yupResolver(validationSchema),
   });
 
-  const onSubmit = (data: unknown) => {
-    console.log("Form submitted with: ", data);
+  const onSubmit = (data: Record<string, unknown>) => {
+    setOpen(true);
+    setValues(data);
   };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4"
-        noValidate
-      >
-        {formSchema.fields.map((field) => (
-          <DynamicField
-            key={field.id}
-            field={field}
-            control={form.control}
-            watch={form.watch}
-            setValue={form.setValue}
-            parentPath={[]}
-          />
-        ))}
-        <Button className="w-full my-4" type="submit">
-          {"Submit"}
-        </Button>
-      </form>
-    </Form>
+    <React.Fragment>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-4"
+          noValidate
+        >
+          {formSchema.fields.map((field) => (
+            <DynamicField
+              key={field.id}
+              field={field}
+              control={form.control}
+              watch={form.watch}
+              setValue={form.setValue}
+              parentPath={[]}
+            />
+          ))}
+          <Button className="w-full my-4" type="submit">
+            {"Submit"}
+          </Button>
+        </form>
+      </Form>
+      <Result data={values} open={open} onOpenChange={setOpen} />
+    </React.Fragment>
   );
 }
 
