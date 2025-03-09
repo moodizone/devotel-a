@@ -30,9 +30,9 @@ export function generateYupSchema(fields: FormFieldType[]) {
             `Must be at least ${field.validation.min}`
           );
         if (field.validation?.max !== undefined)
-          validator = (validator as yup.NumberSchema).min(
+          validator = (validator as yup.NumberSchema).max(
             field.validation.max,
-            `Must be at least ${field.validation.max}`
+            `Must be at most ${field.validation.max}`
           );
         break;
 
