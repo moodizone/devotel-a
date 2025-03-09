@@ -38,6 +38,7 @@ import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { generateYupSchema } from "@/validation";
+import { appFetch } from "@/utils/fetch";
 
 interface DynamicFormProps {
   formSchema: FormType;
@@ -196,8 +197,35 @@ function DynamicField({
           )}
         />
       );
-    // TODO dynamic
-    case "select":
+    case "select": {
+      let options: string[] = [];
+      let isDisable = false;
+
+      if (field.dynamicOptions) {
+        isDisable = true;
+        const { dependsOn, endpoint, method } = field.dynamicOptions;
+        const value = watch([...parentPath, dependsOn].join("."));
+
+        // send request only if prerequisite is met
+        if (value) {
+          appFetch<string[]>(`${endpoint}?${dependsOn}=${value}`, {
+            method,
+          })
+            .then((data) => {
+              options = data;
+            })
+            // ignore errors
+            .catch(() => {
+              options = [];
+            })
+            .finally(() => {
+              isDisable = false;
+            });
+        }
+      } else {
+        options = field.options ? [...field.options] : [];
+      }
+
       return (
         <FormField
           control={control}
@@ -206,14 +234,18 @@ function DynamicField({
             <FormItem className="mb-4">
               <FormLabel>{field.label}</FormLabel>
               <FormControl>
-                <Select defaultValue={f.value} onValueChange={f.onChange}>
+                <Select
+                  disabled={isDisable}
+                  defaultValue={f.value}
+                  onValueChange={f.onChange}
+                >
                   <FormControl className="w-[240px]">
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {field.options?.map((o) => (
+                    {options.map((o) => (
                       <SelectItem key={o} value={o}>
                         {o}
                       </SelectItem>
@@ -226,6 +258,7 @@ function DynamicField({
           )}
         />
       );
+    }
     case "radio":
       return (
         <FormField
