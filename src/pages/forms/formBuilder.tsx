@@ -1,11 +1,5 @@
 import * as React from "react";
-import {
-  Control,
-  FieldValues,
-  useForm,
-  UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
@@ -47,10 +41,8 @@ interface DynamicFormProps {
 
 interface DynamicFieldProps {
   field: FormFieldType;
-  control: Control;
-  watch: UseFormWatch<FieldValues>;
-  setValue: UseFormSetValue<FieldValues>;
-  parentPath: string[];
+  form: UseFormReturn;
+  parentPath?: string[];
 }
 
 function DynamicForm({ formSchema }: DynamicFormProps) {
@@ -78,14 +70,7 @@ function DynamicForm({ formSchema }: DynamicFormProps) {
           noValidate
         >
           {formSchema.fields.map((field) => (
-            <DynamicField
-              key={field.id}
-              field={field}
-              control={form.control}
-              watch={form.watch}
-              setValue={form.setValue}
-              parentPath={[]}
-            />
+            <DynamicField key={field.id} field={field} form={form} />
           ))}
           <Button className="w-full my-4" type="submit">
             {"Submit"}
@@ -97,55 +82,52 @@ function DynamicForm({ formSchema }: DynamicFormProps) {
   );
 }
 
-function DynamicField({
-  field,
-  control,
-  watch,
-  setValue,
-  parentPath,
-}: DynamicFieldProps) {
+function DynamicField({ field, form, parentPath = [] }: DynamicFieldProps) {
   //================================
   // Init
   //================================
+  const oldDependOnValue = React.useRef<unknown>(null);
   const id = [...parentPath, field.id].join(".");
   const shouldDisplay = field.visibility
-    ? watch([...parentPath, field.visibility.dependsOn].join(".")) ===
+    ? form.watch([...parentPath, field.visibility.dependsOn].join(".")) ===
       field.visibility.value
     : true;
-  const [options, setOptions] = React.useState<string[]>([]);
+  const [options, setOptions] = React.useState<string[]>(() => {
+    if (field.type === "select" && field.options) {
+      return field.options;
+    }
+    return [];
+  });
   const [disable, setDisable] = React.useState(false);
 
   React.useEffect(() => {
-    if (field.type === "select") {
-      if (field.dynamicOptions) {
-        const { dependsOn, endpoint, method } = field.dynamicOptions;
-        const value = watch([...parentPath, dependsOn].join("."));
+    if (field.type === "select" && field.dynamicOptions) {
+      const { dependsOn, endpoint, method } = field.dynamicOptions;
+      const dependOnValue = form.watch([...parentPath, dependsOn].join("."));
 
-        // Only fetch if the prerequisite value has changed and is not empty
-        if (value) {
-          setDisable(true);
-          appFetch<string[]>(`${endpoint}?${dependsOn}=${value}`, { method })
-            .then((data) => {
-              setOptions(data);
-            })
-            .catch(() => {
-              setOptions([]);
-            })
-            .finally(() => {
-              setDisable(false);
-            });
-        } else {
-          // Clear options if the prerequisite value is empty
-          setOptions([]);
-          setDisable(true);
-        }
+      // Only fetch if the prerequisite value has changed and is not empty
+      if (dependOnValue && oldDependOnValue.current !== dependOnValue) {
+        oldDependOnValue.current = dependOnValue;
+        setDisable(true);
+        appFetch<string[]>(`${endpoint}?${dependsOn}=${dependOnValue}`, {
+          method,
+        })
+          .then((data) => {
+            setOptions(data);
+          })
+          .catch(() => {
+            setOptions([]);
+          })
+          .finally(() => {
+            setDisable(false);
+          });
       } else {
-        setOptions(field.options ?? []);
+        // Clear options if the prerequisite value is empty
+        setOptions([]);
+        setDisable(true);
       }
     }
-
-    // @ts-expect-error can not alias inside dep
-  }, [field.dynamicOptions, field.type, parentPath, field.options, watch]);
+  }, [field, parentPath, form]);
 
   //================================
   // Render
@@ -156,7 +138,7 @@ function DynamicField({
     case "text":
       return (
         <FormField
-          control={control}
+          control={form.control}
           name={id}
           render={({ field: f }) => (
             <FormItem className="mb-4">
@@ -180,7 +162,7 @@ function DynamicField({
     case "number":
       return (
         <FormField
-          control={control}
+          control={form.control}
           name={id}
           render={({ field: f }) => (
             <FormItem className="mb-4">
@@ -205,7 +187,7 @@ function DynamicField({
     case "date":
       return (
         <FormField
-          control={control}
+          control={form.control}
           name={id}
           render={({ field: f }) => (
             <FormItem className="flex flex-col">
@@ -247,7 +229,7 @@ function DynamicField({
     case "select": {
       return (
         <FormField
-          control={control}
+          control={form.control}
           name={id}
           render={({ field: f }) => (
             <FormItem className="mb-4">
@@ -281,7 +263,7 @@ function DynamicField({
     case "radio":
       return (
         <FormField
-          control={control}
+          control={form.control}
           name={id}
           render={({ field: f }) => (
             <FormItem className="mb-4">
@@ -316,9 +298,7 @@ function DynamicField({
                 parentPath={[...parentPath, id]}
                 key={subField.id}
                 field={subField}
-                control={control}
-                watch={watch}
-                setValue={setValue}
+                form={form}
               />
             ))}
           </CardContent>
